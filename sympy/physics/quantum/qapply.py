@@ -62,7 +62,13 @@ def qapply(e, **options):
     # TensorProducts. The only problem with this is that if we can't apply
     # all the Operators, we have just expanded everything.
     # TODO: don't expand the scalars in front of each Mul.
-    e = e.expand(commutator=True, tensorproduct=True)
+
+    coef=S.One
+    #print "initial 1 e  = ", e , type(e)
+    if isinstance(e,Mul):
+      pass;
+    else:  
+      e = e.expand(commutator=True, tensorproduct=True)
 
     # If we just have a raw ket, return it.
     if isinstance(e, KetBase):
@@ -86,7 +92,22 @@ def qapply(e, **options):
 
     # We have a Mul where there might be actual operators to apply to kets.
     elif isinstance(e, Mul):
-        result = qapply_Mul(e, **options)
+        #print "initial e= " , e
+        (c_part, nc_part ) = e.args_cnc()
+        if ( len(c_part) == 0 ):
+          c_part=[S.One]
+        if ( len(nc_part) == 0 ):
+          nc_part=[S.One]
+
+        coef=Mul(*tuple(c_part))
+        nc=Mul(*tuple(nc_part))
+
+        #print "nc= " , nc, "coeff=", coef
+        e = nc.expand(commutator=True, tensorproduct=True)
+        #print "e=" , e
+
+        result = coef*qapply_Mul(e, **options)
+
         if result == e and dagger:
             return Dagger(qapply_Mul(Dagger(e), **options))
         else:
@@ -172,4 +193,7 @@ def qapply_Mul(e, **options):
         return result*qapply_Mul(e._new_rawargs(*args), **options)
     else:  # result is a scalar times a Mul, Add or TensorProduct
         return qapply(e._new_rawargs(*args)*result, **options)
+
+
+
 
