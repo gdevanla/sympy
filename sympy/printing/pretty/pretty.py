@@ -1507,6 +1507,13 @@ class PrettyPrinter(Printer):
 
         return prettyForm(pretty_result[0])
 
+    def _print_Tr(self, p):
+        #TODO: Handle indices
+        pform = self._print(p.args[0])
+        pform = prettyForm(*pform.left('%s(' % (p.__class__.__name__)))
+        pform = prettyForm(*pform.right(')'))
+        return pform
+
 def pretty(expr, **settings):
     """Returns a string containing the prettified form of expr.
 
