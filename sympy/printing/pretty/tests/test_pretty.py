@@ -15,6 +15,7 @@ from sympy.printing.pretty import pprint
 from sympy.physics.units import joule
 
 from sympy.utilities.pytest import raises, XFAIL
+from sympy.core.trace import Tr
 
 a, b, x, y, z, k = symbols('a,b,x,y,z,k')
 th = Symbol('theta')
@@ -3742,3 +3743,9 @@ def test_categories():
     assert upretty(d) == u"{f₂∘f₁:A₁⟶  A₃: ∅, id:A₁⟶  A₁: ∅, id:A₂⟶  A₂: " \
            u"∅, id:A₃⟶  A₃: ∅, f₁:A₁⟶  A₂: {unique}, f₂:A₂⟶  A₃: ∅}" \
            u" ⟹  {f₂∘f₁:A₁⟶  A₃: {unique}}"
+
+def test_Tr():
+    A, B = symbols('A B', commutative=False)
+    t = Tr(A*B)
+    assert pretty(t) == r'Tr(A*B)'
+    assert upretty(t) == u'Tr(A\u22c5B)'

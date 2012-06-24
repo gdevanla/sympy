@@ -1227,6 +1227,11 @@ class LatexPrinter(Printer):
 
         return latex_result
 
+    def _print_Tr(self, p):
+        #Todo: Handle indices
+        contents = self._print(p.args[0])
+        return r'\mbox{Tr}\left(%s\right)' % (contents)
+
 def latex(expr, **settings):
     r"""
     Convert the given expression to LaTeX representation.

@@ -15,6 +15,7 @@ from sympy.printing.latex import latex
 from sympy.utilities.pytest import XFAIL, raises
 from sympy.functions import DiracDelta
 from sympy.logic import Implies
+from sympy.core.trace import Tr
 
 x, y, z, t = symbols('x y z t')
 k, n = symbols('k n', integer=True)
@@ -612,3 +613,9 @@ def test_categories():
            " & f_{2}:A_{2}\\rightarrow A_{3} : \\emptyset\\end{Bmatrix}" \
            "\\Longrightarrow \\begin{Bmatrix}f_{2}\\circ f_{1}:A_{1}" \
            "\\rightarrow A_{3} : \\left\\{unique\\right\\}\\end{Bmatrix}"
+
+def test_Tr():
+    #TODO: Handle indices
+    A, B = symbols('A B', commutative=False)
+    t = Tr(A*B)
+    assert latex(t) == r'\mbox{Tr}\left(A B\right)'
